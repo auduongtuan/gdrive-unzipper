@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SUEnableDownloaderService</key>
+	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://lab.auduongtuan.com/gdrive-unzipper/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>XUisVrERgxjxhUlj/R6GgdM0D63SJssmWZHdRTv90ao=</string>
+</dict>
+</plist>
