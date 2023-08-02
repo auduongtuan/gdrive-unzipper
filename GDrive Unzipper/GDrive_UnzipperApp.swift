@@ -19,6 +19,7 @@ extension Scene {
 }
 @main
 struct GDrive_UnzipperApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let updaterController: SPUStandardUpdaterController
         
     init() {
@@ -33,6 +34,13 @@ struct GDrive_UnzipperApp: App {
         }
         .windowResizabilityContentSize()
         .commands {
+//            CommandGroup(replacing: CommandGroupPlacement.appInfo) {
+//               Button(action: {
+//                   appDelegate.showAboutPanel()
+//               }) {
+//                   Text("About GDrive Unzipper")
+//               }
+//           }
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
             }

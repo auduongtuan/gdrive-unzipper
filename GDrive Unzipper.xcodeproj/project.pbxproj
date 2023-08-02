@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		170BEDC92A7A5ADB009EF168 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BEDC82A7A5ADB009EF168 /* AppDelegate.swift */; };
+		170BEDCB2A7A5B16009EF168 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BEDCA2A7A5B16009EF168 /* AboutView.swift */; };
+		170BEDCD2A7A8102009EF168 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 170BEDCC2A7A8102009EF168 /* Credits.rtf */; };
+		170BEDCF2A7A82AD009EF168 /* FileUnzipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BEDCE2A7A82AD009EF168 /* FileUnzipper.swift */; };
+		170BEDD12A7A82DC009EF168 /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BEDD02A7A82DC009EF168 /* FilePicker.swift */; };
+		170BEDD32A7A8F80009EF168 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BEDD22A7A8F80009EF168 /* Message.swift */; };
 		177CDB442A7793920051727D /* GDrive_UnzipperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177CDB432A7793920051727D /* GDrive_UnzipperApp.swift */; };
 		177CDB462A7793920051727D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177CDB452A7793920051727D /* ContentView.swift */; };
 		177CDB482A7793930051727D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 177CDB472A7793930051727D /* Assets.xcassets */; };
@@ -17,6 +23,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		170BEDC82A7A5ADB009EF168 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		170BEDCA2A7A5B16009EF168 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		170BEDCC2A7A8102009EF168 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		170BEDCE2A7A82AD009EF168 /* FileUnzipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUnzipper.swift; sourceTree = "<group>"; };
+		170BEDD02A7A82DC009EF168 /* FilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePicker.swift; sourceTree = "<group>"; };
+		170BEDD22A7A8F80009EF168 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		177CDB402A7793920051727D /* GDrive Unzipper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GDrive Unzipper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		177CDB432A7793920051727D /* GDrive_UnzipperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GDrive_UnzipperApp.swift; sourceTree = "<group>"; };
 		177CDB452A7793920051727D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,6 +78,12 @@
 				177CDB4C2A7793930051727D /* GDrive_Unzipper.entitlements */,
 				177CDB492A7793930051727D /* Preview Content */,
 				17878C472A7962D2001624E0 /* CheckForUpdates.swift */,
+				170BEDC82A7A5ADB009EF168 /* AppDelegate.swift */,
+				170BEDCA2A7A5B16009EF168 /* AboutView.swift */,
+				170BEDCC2A7A8102009EF168 /* Credits.rtf */,
+				170BEDCE2A7A82AD009EF168 /* FileUnzipper.swift */,
+				170BEDD02A7A82DC009EF168 /* FilePicker.swift */,
+				170BEDD22A7A8F80009EF168 /* Message.swift */,
 			);
 			path = "GDrive Unzipper";
 			sourceTree = "<group>";
@@ -145,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				177CDB4B2A7793930051727D /* Preview Assets.xcassets in Resources */,
+				170BEDCD2A7A8102009EF168 /* Credits.rtf in Resources */,
 				177CDB482A7793930051727D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -156,9 +175,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				170BEDC92A7A5ADB009EF168 /* AppDelegate.swift in Sources */,
 				177CDB462A7793920051727D /* ContentView.swift in Sources */,
+				170BEDCF2A7A82AD009EF168 /* FileUnzipper.swift in Sources */,
 				17878C482A7962D2001624E0 /* CheckForUpdates.swift in Sources */,
 				177CDB442A7793920051727D /* GDrive_UnzipperApp.swift in Sources */,
+				170BEDD32A7A8F80009EF168 /* Message.swift in Sources */,
+				170BEDCB2A7A5B16009EF168 /* AboutView.swift in Sources */,
+				170BEDD12A7A82DC009EF168 /* FilePicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
