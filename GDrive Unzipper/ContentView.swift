@@ -27,13 +27,14 @@ struct ContentView: View {
     @State var errorMessage: String = ""
     @State var showErrorMessage: Bool = false
     @State var progress: Double? = nil
-    let fileUnzipper = FileUnzipper()
+    @ObservedObject var fileUnzipper = FileUnzipper()
 
     private func unzip(_ urls: [URL]) {
         withAnimation {
             progress = 50
         }
         do {
+            print("start unzip")
             try fileUnzipper.unzipFiles(urls)
         }
         catch FileUnzipperError.noFilesProvided {
@@ -45,7 +46,7 @@ struct ContentView: View {
             showErrorMessage = true
         }
         withAnimation {
-            print("done")
+            print("animation done")
             progress = nil
         }
         print(urls)
@@ -64,6 +65,15 @@ struct ContentView: View {
                     // Text("Working on it...").font(.body)
                     // ProgressView(value: progress, total: 100).padding([.leading, .bottom, .trailing], 20.0)
                     ProgressView("Working on it...")
+                    if fileUnzipper.files.indices.count > 0 {
+                        Text(String(fileUnzipper.files.count))
+                        ForEach(0..<fileUnzipper.files.count, id: \.self) { index in
+                            Text(String(fileUnzipper.files[index].fileSize))
+                            Text(String(fileUnzipper.files[index].fractionCompleted))
+                        }
+//                        Text("complete" + String(fileUnzipper.unzipProgress!.completedUnitCount))
+//                        Text("total" + String(fileUnzipper.unzipProgress!.totalUnitCount))
+                    }
                     Spacer()
                 }
               

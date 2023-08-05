@@ -76,7 +76,7 @@ struct FilePicker: View {
 //                Button(action: selectFile) {
             VStack(spacing: 8) {
                 Image(systemName: "doc.zipper").foregroundColor(fgColor).font(.largeTitle)
-                Text("Select Google Drive zip files or Drag and drop them here...").foregroundColor(self.fgColor).multilineTextAlignment(.center)
+                Text("Select Google Drive zip files or drop them here...").foregroundColor(self.fgColor).multilineTextAlignment(.center)
                 // }.buttonStyle(PlainButtonStyle()).frame(maxHeight: .infinity)
                 // https://stackoverflow.com/questions/59008409/swiftui-vstack-hstack-zstack-drag-gesture-not-working
                 // https://www.youtube.com/watch?v=yAGTIg7qIak
