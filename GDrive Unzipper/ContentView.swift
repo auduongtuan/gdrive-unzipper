@@ -28,7 +28,7 @@ struct ContentView: View {
     @State var showErrorMessage: Bool = false
     @State var progress: Double? = nil
     @ObservedObject var fileUnzipper = FileUnzipper()
-
+   
     private func unzip(_ urls: [URL]) {
         withAnimation {
             progress = 50
@@ -53,32 +53,40 @@ struct ContentView: View {
     }
     var body: some View {
         ZStack(alignment: .bottom) {
-            FilePicker(processUrls: unzip, completion: {
-                progress = nil
-            }).opacity(progress == nil ? 1 : 0)
+            FilePicker(processUrls: unzip).opacity(fileUnzipper.files.isEmpty ? 1 : 0)
             if showErrorMessage {
                 Message(errorMessage: $errorMessage, showErrorMessage: $showErrorMessage).transition(.move(edge: .bottom))
             }
-            if progress != nil {
-                VStack(spacing: 8) {
-                    Spacer()
-                    // Text("Working on it...").font(.body)
-                    // ProgressView(value: progress, total: 100).padding([.leading, .bottom, .trailing], 20.0)
-                    ProgressView("Working on it...")
-                    if fileUnzipper.files.indices.count > 0 {
-                        Text(String(fileUnzipper.files.count))
-                        ForEach(0..<fileUnzipper.files.count, id: \.self) { index in
-                            Text(String(fileUnzipper.files[index].fileSize))
-                            Text(String(fileUnzipper.files[index].fractionCompleted))
-                        }
-//                        Text("complete" + String(fileUnzipper.unzipProgress!.completedUnitCount))
-//                        Text("total" + String(fileUnzipper.unzipProgress!.totalUnitCount))
+            if fileUnzipper.files.count > 0 {
+                if !fileUnzipper.files.allSatisfy({ file in
+                    file.fractionCompleted == 1.0
+                }) {
+                    VStack(spacing: 8) {
+                        Spacer()
+                        // Text("Working on it...").font(.body)
+                        // ProgressView(value: progress, total: 100)
+                        ProgressView(value: fileUnzipper.files.reduce(0) {
+                            $0 + $1.fractionCompleted * $1.fileSize
+                        }, total: fileUnzipper.files.reduce(0) {
+                            $0 + $1.fileSize
+                        }) {
+                            Text("Working on it")
+                        }.padding([.leading, .bottom, .trailing], 20.0)
+//                        if fileUnzipper.files.indices.count > 0 {
+//                            Text(String(fileUnzipper.files.count))
+//                            ForEach(0..<fileUnzipper.files.count, id: \.self) { index in
+//                                Text(String(fileUnzipper.files[index].fileSize))
+//                                Text(String(fileUnzipper.files[index].fractionCompleted))
+//                            }
+//                            //                        Text("complete" + String(fileUnzipper.unzipProgress!.completedUnitCount))
+//                            //                        Text("total" + String(fileUnzipper.unzipProgress!.totalUnitCount))
+//                        }
+                        Spacer()
                     }
-                    Spacer()
+                    
                 }
-              
             }
-        }.animation(.easeInOut(duration: 0.3), value: showErrorMessage)
+        }.animation(.easeInOut(duration: 0.3), value: showErrorMessage).animation(.easeInOut(duration: 0.3), value: fileUnzipper.files.count)
         
         .padding()
     }

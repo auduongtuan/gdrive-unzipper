@@ -51,14 +51,14 @@ struct FilePicker: View {
                 //Do what you will
                 //If there's only one URL, surely 'openPanel.URL'
                 //but otherwise a for loop works
-                DispatchQueue.global().async {
+//                DispatchQueue.global().async {
                     processUrls!(urls)
-                    DispatchQueue.main.async {
-                        if (completion != nil) {
-                            completion!()
-                        }
-                    }
-                }
+//                    DispatchQueue.main.async {
+//                        if (completion != nil) {
+//                            completion!()
+//                        }
+//                    }
+//                }
             }
         });
     }
@@ -90,14 +90,14 @@ struct FilePicker: View {
         }.onDrop(of: ["public.url","public.file-url"], isTargeted: $dragOver) { (items) -> Bool in
 //            Task {
                 let urls = handleDrop(items: items)
-                DispatchQueue.global().async {
+//                DispatchQueue.global().async {
                     processUrls!(urls)
-                    DispatchQueue.main.async {
-                        if (completion != nil) {
-                            completion!()
-                        }
-                    }
-                }
+//                    DispatchQueue.main.async {
+//                        if (completion != nil) {
+//                            completion!()
+//                        }
+//                    }
+//                }
 //            }
             return true
         }

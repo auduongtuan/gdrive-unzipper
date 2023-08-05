@@ -93,10 +93,20 @@ class FileUnzipper: ObservableObject {
 //        var newName = originNewName
 //        print(newName)
     }
+    public func clearFiles() {
+        DispatchQueue.main.async {
+            self.files.removeAll();
+        }
+    }
     public func addFileInfo(_ urls: [URL]) {
         for url in urls {
             let file = UnzipFile(fileSize: sizePerMB(url: url), fractionCompleted: 0.0)
             files.append(file)
+        }
+    }
+    public func updateProgress(index: Int, fractionCompleted: Double) {
+        DispatchQueue.main.async {
+            self.files[index].fractionCompleted = fractionCompleted
         }
     }
     public func unzipFiles(_ urls: [URL]) throws {
@@ -126,14 +136,17 @@ class FileUnzipper: ObservableObject {
                     destinationURL.appendPathComponent(newName)
                 }
                 try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
-                for index in urls.indices {
-                    let url = urls[index]
-                    let _unzipProgress = Progress()
-                    let observation = _unzipProgress.observe(\.fractionCompleted) { progress, _ in
-                        self.files[index].fractionCompleted = progress.fractionCompleted
+                DispatchQueue.global(qos: .background).async {
+                    for index in urls.indices {
+                        let url = urls[index]
+                        let _unzipProgress = Progress()
+                        let observation = _unzipProgress.observe(\.fractionCompleted) { progress, _ in
+                            self.updateProgress(index: index, fractionCompleted: progress.fractionCompleted)
+                        }
+                        try? fileManager.unzipItem(at: url, to: destinationURL, progress: _unzipProgress)
+                        observation.invalidate()
                     }
-                    try fileManager.unzipItem(at: url, to: destinationURL, progress: _unzipProgress)
-                    observation.invalidate()
+                    self.clearFiles();
                 }
             } catch {
                 print("Extraction of ZIP archive failed with error:\(error)")
