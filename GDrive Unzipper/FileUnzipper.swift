@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import ZIPFoundation
 
 enum FileUnzipperError: Error {
     case noFilesProvided
     case filesNotFound
+    case unzipFailed
 }
 
 extension String {
@@ -27,19 +29,21 @@ extension String {
     }
 }
 
-func sizePerMB(url: URL?) -> Double {
+func getFileSize(url: URL?) -> UInt64 {
     guard let filePath = url?.path else {
-        return 0.0
+        return 0
     }
     do {
-        let attribute = try FileManager.default.attributesOfItem(atPath: filePath)
-        if let size = attribute[FileAttributeKey.size] as? NSNumber {
-            return size.doubleValue / 1000000.0
+        let fileAttributes = try FileManager.default.attributesOfItem(atPath: filePath)
+        if let fileSize = fileAttributes[FileAttributeKey.size]  {
+            return (fileSize as! NSNumber).uint64Value
+        } else {
+            print("Failed to get a size attribute from path: \(filePath)")
         }
     } catch {
-        print("Error: \(error)")
+        print("Failed to get file attributes for local path: \(filePath) with error: \(error)")
     }
-    return 0.0
+    return 0
 }
 
 func json(from object:Any) -> String? {
@@ -50,7 +54,7 @@ func json(from object:Any) -> String? {
 }
 
 struct UnzipFile {
-    var fileSize: Double
+    var fileSize: UInt64
     var fractionCompleted: Double
 }
 
@@ -100,7 +104,7 @@ class FileUnzipper: ObservableObject {
     }
     public func addFileInfo(_ urls: [URL]) {
         for url in urls {
-            let file = UnzipFile(fileSize: sizePerMB(url: url), fractionCompleted: 0.0)
+            let file = UnzipFile(fileSize: getFileSize(url: url), fractionCompleted: 0.0)
             files.append(file)
         }
     }
@@ -109,7 +113,7 @@ class FileUnzipper: ObservableObject {
             self.files[index].fractionCompleted = fractionCompleted
         }
     }
-    public func unzipFiles(_ urls: [URL]) throws {
+    public func unzipFiles(_ urls: [URL], onError: ((Error?)->())?) throws {
         if(urls.count == 0) {
             throw FileUnzipperError.noFilesProvided
         };
@@ -136,6 +140,7 @@ class FileUnzipper: ObservableObject {
                     destinationURL.appendPathComponent(newName)
                 }
                 try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+                
                 DispatchQueue.global(qos: .background).async {
                     for index in urls.indices {
                         let url = urls[index]
@@ -143,13 +148,30 @@ class FileUnzipper: ObservableObject {
                         let observation = _unzipProgress.observe(\.fractionCompleted) { progress, _ in
                             self.updateProgress(index: index, fractionCompleted: progress.fractionCompleted)
                         }
-                        try? fileManager.unzipItem(at: url, to: destinationURL, progress: _unzipProgress)
+                        print("unzip "+url.absoluteString)
+                        let archive = Archive(url: url, accessMode: .update)
+                        for entry in archive! {
+                            if(entry.path.contains(".DS_Store")) {
+                                print("remove .DS_Store " + entry.path)
+                                try? archive?.remove(entry)
+                            }
+                        }
+                        do {
+                            try fileManager.unzipItem(at: url, to: destinationURL, skipCRC32: true, progress: _unzipProgress)
+                        }
+                        catch {
+                            print(error)
+                            if let callableOnError = onError {
+                                callableOnError(error)
+                            }
+                        }
                         observation.invalidate()
                     }
-                    self.clearFiles();
+//                    self.clearFiles();
                 }
             } catch {
                 print("Extraction of ZIP archive failed with error:\(error)")
+                throw FileUnzipperError.unzipFailed
             }
 
 

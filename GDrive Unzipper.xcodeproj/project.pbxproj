@@ -147,6 +147,7 @@
 			packageReferences = (
 				177CDB522A77FE6E0051727D /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				17878C442A796278001624E0 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				17F15C1C2A7FDBEA0033E333 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = 177CDB412A7793920051727D /* Products */;
 			projectDirPath = "";
@@ -310,7 +311,7 @@
 				CODE_SIGN_ENTITLEMENTS = "GDrive Unzipper/GDrive_Unzipper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GDrive Unzipper/Preview Content\"";
 				DEVELOPMENT_TEAM = X37SWP7FPL;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -340,7 +341,7 @@
 				CODE_SIGN_ENTITLEMENTS = "GDrive Unzipper/GDrive_Unzipper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"GDrive Unzipper/Preview Content\"";
 				DEVELOPMENT_TEAM = X37SWP7FPL;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -397,6 +398,14 @@
 		17878C442A796278001624E0 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		17F15C1C2A7FDBEA0033E333 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;

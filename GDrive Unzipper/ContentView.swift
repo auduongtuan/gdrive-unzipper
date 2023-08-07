@@ -20,73 +20,108 @@ extension String {
         return CharacterSet(charactersIn: self).isSubset(of: digitsCharacters)
     }
 }
+struct GaugeProcesssCircle: View {
+    var fractionCompleted: Double
+    var strokeColor = Color.accentColor
+    var sucessStrokeColor = Color.green
+    var bgStrokeColor = Color(NSColor.controlColor)
+    var strokeWidth = 10.0
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(bgStrokeColor, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            Circle()
+                .trim(from: 0, to: fractionCompleted)
+                .stroke(fractionCompleted.isEqual(to: 1) ? sucessStrokeColor : strokeColor, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+    }
+}
+struct GaugeProgressStyle: ProgressViewStyle {
+    
+    var textColor = Color(NSColor.controlTextColor)
+ 
 
+    func makeBody(configuration: Configuration) -> some View {
+        let fractionCompleted = configuration.fractionCompleted ?? 0
+
+        return ZStack {
+           
+            Text(String(format: "%02.0f", fractionCompleted*100)+"%")
+                .font(.system(size: 40).monospacedDigit()).fontWeight(.light)
+                .padding(25)
+                .minimumScaleFactor(0.01).lineLimit(1).foregroundColor(textColor)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .overlay(
+                    GaugeProcesssCircle(fractionCompleted: fractionCompleted)
+                )
+                .aspectRatio(1, contentMode: .fit)
+           
+        }
+    }
+}
 
 
 struct ContentView: View {
-    @State var errorMessage: String = ""
-    @State var showErrorMessage: Bool = false
-    @State var progress: Double? = nil
+    @State var errorMessageState: MessageState = MessageState(message: "", show: false)
     @ObservedObject var fileUnzipper = FileUnzipper()
+    @State var completed: Double = 0
+    
+    
+    private func updateState()
+    {
+        
+    }
    
     private func unzip(_ urls: [URL]) {
-        withAnimation {
-            progress = 50
-        }
         do {
             print("start unzip")
-            try fileUnzipper.unzipFiles(urls)
+            try fileUnzipper.unzipFiles(urls) { error in
+//                fileUnzipper.clearFiles()
+                errorMessageState.message = "Cannot unzip. Please try again"
+                errorMessageState.show = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.fileUnzipper.clearFiles()
+                }
+            }
         }
         catch FileUnzipperError.noFilesProvided {
-            errorMessage = "No zip files provided"
-            showErrorMessage = true
+            errorMessageState.message = "No .zip files provided"
+            errorMessageState.show = true
         }
         catch {
-            errorMessage = "There are some errors"
-            showErrorMessage = true
+            errorMessageState.message = "There are some errors. Try again"
+            errorMessageState.show = true
         }
         withAnimation {
             print("animation done")
-            progress = nil
         }
-        print(urls)
     }
     var body: some View {
         ZStack(alignment: .bottom) {
-            FilePicker(processUrls: unzip).opacity(fileUnzipper.files.isEmpty ? 1 : 0)
-            if showErrorMessage {
-                Message(errorMessage: $errorMessage, showErrorMessage: $showErrorMessage).transition(.move(edge: .bottom))
-            }
+            FilePicker(processUrls: unzip).opacity(fileUnzipper.files.isEmpty ? 1 : 0).disabled(!fileUnzipper.files.isEmpty)
+//            ProgressView(value: 0.5).progressViewStyle(GaugeProgressStyle()).padding(20)
             if fileUnzipper.files.count > 0 {
-                if !fileUnzipper.files.allSatisfy({ file in
-                    file.fractionCompleted == 1.0
-                }) {
-                    VStack(spacing: 8) {
-                        Spacer()
-                        // Text("Working on it...").font(.body)
-                        // ProgressView(value: progress, total: 100)
-                        ProgressView(value: fileUnzipper.files.reduce(0) {
-                            $0 + $1.fractionCompleted * $1.fileSize
-                        }, total: fileUnzipper.files.reduce(0) {
-                            $0 + $1.fileSize
-                        }) {
-                            Text("Working on it")
-                        }.padding([.leading, .bottom, .trailing], 20.0)
-//                        if fileUnzipper.files.indices.count > 0 {
-//                            Text(String(fileUnzipper.files.count))
-//                            ForEach(0..<fileUnzipper.files.count, id: \.self) { index in
-//                                Text(String(fileUnzipper.files[index].fileSize))
-//                                Text(String(fileUnzipper.files[index].fractionCompleted))
-//                            }
-//                            //                        Text("complete" + String(fileUnzipper.unzipProgress!.completedUnitCount))
-//                            //                        Text("total" + String(fileUnzipper.unzipProgress!.totalUnitCount))
-//                        }
-                        Spacer()
+                    ProgressView(value: completed).progressViewStyle(GaugeProgressStyle()).padding(10).onReceive(self.fileUnzipper.$files) {
+                            let sizeCompleted = $0.reduce(0) {
+                                $0 + $1.fractionCompleted * Double($1.fileSize)
+                            }
+                            let sizeTotal = $0.reduce(0) {
+                                $0 + Double($1.fileSize)
+                            }
+                            self.completed = sizeCompleted / sizeTotal
+                            if(self.completed.isEqual(to: 1)) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    self.fileUnzipper.clearFiles()
+                                }
+                            }
                     }
-                    
-                }
             }
-        }.animation(.easeInOut(duration: 0.3), value: showErrorMessage).animation(.easeInOut(duration: 0.3), value: fileUnzipper.files.count)
+            if errorMessageState.show {
+                Message(state: $errorMessageState).transition(.move(edge: .bottom))
+            }
+        }.animation(.easeInOut(duration: 0.3), value: errorMessageState.show).animation(.easeInOut(duration: 0.3), value: fileUnzipper.files.count)
         
         .padding()
     }
